@@ -1,0 +1,32 @@
+---
+- name: Add new users
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    uid: "{{ item.uid }}"
+    append: yes
+  with_items: "{{ crawl_users }}"
+
+- name: Add new groups
+  group:
+    name: "{{ item.name }}"
+    gid: "{{ item.uid }}"
+  with_items: "{{ crawl_users }}"
+
+- name: Modify existing system users
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    append: yes
+  with_items: "{{ system_users }}"
+
+- name: Setup sudoers file
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%{{ item }} ALL\='
+    line: '%{{ item }} ALL=(ALL:ALL) NOPASSWD:ALL'
+    validate: 'visudo -cf %s'
+  with_items:
+    - crawl
+    - crawl-dev

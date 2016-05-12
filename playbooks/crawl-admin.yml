@@ -1,0 +1,69 @@
+---
+# Run the following commands as crawl-dev
+- block:
+  - name: Create directories for crawl-dev
+    file:
+      path: "{{ item.path }}"
+      owner: "{{ item.owner | default('crawl-dev') }}"
+      group: "{{ item.group | default('crawl-dev') }}"
+      state: directory
+    with_items:
+      - path: "{{ crawl_dev_dir }}logs"
+      - path: "{{ crawl_dev_dir }}run"
+
+  - name: Clone git repositories
+    git:
+      repo: "{{ item.repo }}"
+      version: "{{ item.version | default('HEAD') }}"
+      dest: "{{ item.dest }}"
+    with_items:
+      - repo: git://github.com/neilmoore/dgamelaunch.git
+        version: szorg
+        dest: "{{ crawl_dev_dir }}dgamelaunch"
+      - repo: git://github.com/neilmoore/dgamelaunch-config.git
+        version: szorg
+        dest: "{{ crawl_dev_dir }}dgamelaunch-config"
+      - repo: git://github.com/neilmoore/sizzell.git
+        dest: "{{ crawl_dev_dir }}sizzell"
+
+  - name: Build dgamelaunch
+    shell: "sh autogen.sh --enable-debugfile --enable-sqlite --enable-shmem"
+    args:
+      chdir: "{{ crawl_dev_dir}}dgamelaunch"
+      creates: "{{ crawl_dev_dir }}dgamelaunch/Makefile"
+
+  - name: Ensure Makefile exists
+    stat: path={{ crawl_dev_dir }}dgamelaunch/Makefile
+    register: makefile_stat
+
+  - name: Add -pthread to LIBS= in the Makefile
+    lineinfile:
+      dest: "{{ crawl_dev_dir }}dgamelaunch/Makefile"
+      regexp: '^LIBS =.*$'
+      line: 'LIBS = -lncursesw -lutil -lcrypt -lsqlite3 -lrt -pthread'
+    when: makefile_stat.stat.exists
+
+  - name: Make virus and ee
+    command: make VIRUS=1
+    args:
+      chdir: "{{ crawl_dev_dir }}/dgamelaunch/"
+      creates: "{{ crawl_dev_dir }}/dgamelaunch/virus"
+
+  become_user: crawl-dev
+  become: yes
+
+# Back to root
+- name: Install virus and ee
+  command: make install
+  args:
+    chdir: "{{ crawl_dev_dir }}/dgamelaunch/"
+    creates: "/usr/local/sbin/dgamelaunch"
+
+- name: Copy virus and ee to chroot
+  command: cp {{ item }} {{ chroot_dir }}/bin/{{ item }}
+  args:
+    chdir: "{{ crawl_dev_dir }}/dgamelaunch"
+    creates: "{{ chroot_dir }}/bin/{{ item }}"
+  with_items:
+    - virus
+    - ee

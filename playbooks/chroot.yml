@@ -1,0 +1,45 @@
+---
+- name: Create chroot directory
+  file: path={{ chroot_dir }} state=directory
+  register: chroot_dir_results
+
+- block:
+  - name: Setup chroot
+    command: /usr/sbin/debootstrap {{ ansible_distribution_release }} {{ chroot_dir }}
+  - name: Install chroot packages
+    shell: chroot {{ chroot_dir }} apt-get -y install {{ item }}
+    with_items:
+      - bzip2
+      - python-minimal
+      - ncurses-term
+      - sqlite3
+      - libpcre3
+      - liblua5.1-0
+  - name: Setup chroot locale
+    shell: chroot {{ chroot_dir }} locale-gen en_US.UTF-8
+  - name: Reconfigure locales
+    shell: chroot {{ chroot_dir }} dpkg-reconfigure locales
+  - name: Add crawl users
+    shell: chroot {{ chroot_dir }} adduser --disabled-password --gecos "" {{ item.name }}
+    with_items: "{{ crawl_users }}"
+  - name: Modify users
+    shell: chroot {{ chroot_dir }} usermod -u {{ item.uid }} {{ item.name }}
+    with_items: "{{ crawl_users }}"
+  - name: Modify user groups
+    shell: chroot {{ chroot_dir }} groupmod -g {{ item.uid }} {{ item.name }}
+    with_items: "{{ crawl_users }}"
+  when: chroot_dir_results.changed
+
+- name: Add mounts
+  mount:
+    name: "{{ chroot_dir }}{{ item }}"
+    src: "/{{ item }}"
+    fstype: none
+    opts: bind
+    state: mounted
+  with_items: "{{ mounts }}"
+
+- name: Set permissions for chrooted /dev/ptmx
+  file:
+    path: "{{ chroot_dir }}dev/ptmx"
+    mode: "0666"

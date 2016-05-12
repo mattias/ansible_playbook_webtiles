@@ -1,0 +1,17 @@
+---
+  - hosts: webtiles
+    become_user: root
+    become: yes
+    
+    vars_files:
+      - vars/webtiles.yml
+
+    roles:
+      - geerlingguy.git
+      - geerlingguy.nginx
+
+    tasks:
+      - include: playbooks/install.yml
+      - include: playbooks/users.yml
+      - include: playbooks/chroot.yml
+      - include: playbooks/crawl-admin.yml

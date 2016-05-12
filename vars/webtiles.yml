@@ -1,0 +1,20 @@
+---
+chroot_dir: /home/crawl/DGL/
+crawl_dev_dir: /home/crawl-dev/
+crawl_users:
+  - name: crawl
+    groups: root,www-data
+    uid: 1045
+  - name: crawl-dev
+    groups: root,www-data
+    uid: 1046
+system_users:
+  - name: www-data
+    groups: crawl,crawl-dev
+    uid: ""
+  - name: root
+    groups: crawl,crawl-dev
+    uid: ""
+mounts:
+  - proc
+  - dev/pts
