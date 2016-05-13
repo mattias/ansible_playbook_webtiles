@@ -18,3 +18,14 @@ system_users:
 mounts:
   - proc
   - dev/pts
+
+# dgamelaunch.conf variables
+max_users: "64000"
+server_id: "CSZO - Dungeon Crawl Stone Soup - crawl.s-z.org / dobrazupa.org"
+server_name: "cszo"
+versions:
+  - "0.16"
+  - "0.17"
+  - "0.18"
+port: "8080"
+ssl: False

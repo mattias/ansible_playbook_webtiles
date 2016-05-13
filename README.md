@@ -4,10 +4,8 @@ This is an ansible playbook to quickly get a working webtiles server up and runn
 
 ## Prerequisites
 * ansible >= 2.0.2.0
-
-(optional)
-* vagrant
-* virtualbox
+* vagrant (optional)
+* virtualbox (optional)
 
 ## Getting started
 First install the required ansible roles.
@@ -34,5 +32,3 @@ ansible-playbook -i inventories/ crawl.yml
 
 ## Notes
 * Edit /etc/ansible/ansible.cfg and both uncomment and set roles_path to $HOME/.ansible/roles
-
-More to come...

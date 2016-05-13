@@ -13,8 +13,21 @@
       - regexp: '^export WEB_SAVEDUMP_URL=.*$'
         line: 'export WEB_SAVEDUMP_URL="{{ protocol }}{{ webtiles_domain }}/morgue/"'
 
-  # - name: Configure crawl-git.conf
-  #   lineinfile:
-  #     dest: "{{ crawl_dev_dir }}dgamelaunch-config"
+  - name: Configure crawl-git.conf
+    lineinfile:
+      dest: "{{ crawl_dev_dir }}dgamelaunch-config/crawl-git.conf"
+      regexp: '^CRAWL_GIT_URL=.*$'
+      line: 'CRAWL_GIT_URL=https://github.com/crawl/crawl.git'
+
+  - name: Configure dgamelaunch.conf
+    template:
+      src: templates/dgamelaunch.conf.j2
+      dest: "{{ crawl_dev_dir }}dgamelaunch-config/dgamelaunch.conf"
+
+  - name: Configure config.py
+    template:
+      src: templates/config.py.j2
+      dest: "{{ crawl_dev_dir }}dgamelaunch-config/config.py"
+
   become_user: crawl-dev
   become: yes
