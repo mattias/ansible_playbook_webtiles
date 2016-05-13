@@ -2,7 +2,7 @@
   - hosts: webtiles
     become_user: root
     become: yes
-    
+
     vars_files:
       - vars/webtiles.yml
 
@@ -15,3 +15,4 @@
       - include: playbooks/users.yml
       - include: playbooks/chroot.yml
       - include: playbooks/crawl-admin.yml
+      - include: playbooks/configure.yml

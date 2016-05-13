@@ -9,5 +9,6 @@
     - autoconf
     - bison
     - flex
+    - ncurses-dev
     - libncursesw5-dev
     - libsqlite3-dev

@@ -1,4 +1,6 @@
 ---
+protocol: https://
+webtiles_domain: crawl-webtiles.com
 chroot_dir: /home/crawl/DGL/
 crawl_dev_dir: /home/crawl-dev/
 crawl_users:
@@ -11,10 +13,8 @@ crawl_users:
 system_users:
   - name: www-data
     groups: crawl,crawl-dev
-    uid: ""
   - name: root
     groups: crawl,crawl-dev
-    uid: ""
 mounts:
   - proc
   - dev/pts

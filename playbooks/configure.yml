@@ -1,0 +1,20 @@
+---
+- block:
+  - name: Configure dgl-manage.conf
+    lineinfile:
+      dest: "{{ crawl_dev_dir }}dgamelaunch-config/dgl-manage.conf"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+    with_items:
+      - regexp: '^export DGL_UID.*$'
+        line: 'export DGL_UID={{ crawl_users[0].uid }}'
+      - regexp: '^export DGL_SERVER.*$'
+        line: 'export DGL_SERVER={{ webtiles_domain }}'
+      - regexp: '^export WEB_SAVEDUMP_URL=.*$'
+        line: 'export WEB_SAVEDUMP_URL="{{ protocol }}{{ webtiles_domain }}/morgue/"'
+
+  # - name: Configure crawl-git.conf
+  #   lineinfile:
+  #     dest: "{{ crawl_dev_dir }}dgamelaunch-config"
+  become_user: crawl-dev
+  become: yes

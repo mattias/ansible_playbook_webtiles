@@ -24,8 +24,8 @@
   lineinfile:
     dest: /etc/sudoers
     state: present
-    regexp: '^%{{ item }} ALL\='
-    line: '%{{ item }} ALL=(ALL:ALL) NOPASSWD:ALL'
+    regexp: '^{{ item }} ALL\=.*$'
+    line: '{{ item }} ALL=(ALL:ALL) NOPASSWD:ALL'
     validate: 'visudo -cf %s'
   with_items:
     - crawl
