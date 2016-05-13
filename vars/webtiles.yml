@@ -1,6 +1,7 @@
 ---
-protocol: https://
-webtiles_domain: crawl-webtiles.com
+protocol: http://
+domain: crawl-webtiles.com
+letsencrypt_email: webmaster@crawl-webtiles.com
 chroot_dir: /home/crawl/DGL/
 crawl_dev_dir: /home/crawl-dev/
 crawl_users:
@@ -29,3 +30,19 @@ versions:
   - "0.18"
 port: "8080"
 ssl: False
+
+# letsencrypt TODO
+letsencrypt_defaults:
+  dir: store/letsencrypt-test
+  email: 'webmaster@{{ domain }}'
+  host: "{{ domain }}"
+  webroot: /var/www/crawl_ssl
+  min_days: 7
+  domains_key_size: 4096
+  user_key_size: 4096
+  staging: yes
+letsencrypt_certificates:
+  - domains:
+      - name: "{{ domain }}"
+        cn: yes
+      - www.{{ domain }}

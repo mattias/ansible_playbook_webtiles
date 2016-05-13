@@ -9,6 +9,7 @@
     roles:
       - geerlingguy.git
       - geerlingguy.nginx
+      - { role: cw-ansible.cw-letsencrypt, when: ssl }
 
     tasks:
       - include: playbooks/install.yml

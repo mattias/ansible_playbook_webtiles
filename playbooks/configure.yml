@@ -9,9 +9,9 @@
       - regexp: '^export DGL_UID.*$'
         line: 'export DGL_UID={{ crawl_users[0].uid }}'
       - regexp: '^export DGL_SERVER.*$'
-        line: 'export DGL_SERVER={{ webtiles_domain }}'
+        line: 'export DGL_SERVER={{ domain }}'
       - regexp: '^export WEB_SAVEDUMP_URL=.*$'
-        line: 'export WEB_SAVEDUMP_URL="{{ protocol }}{{ webtiles_domain }}/morgue/"'
+        line: 'export WEB_SAVEDUMP_URL="{{ protocol }}{{ domain }}/morgue/"'
 
   - name: Configure crawl-git.conf
     lineinfile:
@@ -31,3 +31,85 @@
 
   become_user: crawl-dev
   become: yes
+
+- name: Create core directories
+  file:
+    path: "{{ chroot_dir }}/{{ item }}"
+    owner: "{{ crawl_users.0.name }}"
+    group: "{{ crawl_users.0.name }}"
+    state: directory
+  with_items:
+    - crawl-master/webserver/run/
+    - crawl-master/webserver/sockets/
+    - crawl-master/webserver/templates/
+    - dgldir/dumps/
+    - dgldir/morgue/
+    - dgldir/rcfiles/
+    - dgldir/ttyrec/
+    - dgldir/data/menus/
+    - dgldir/inprogress/
+
+- name: Created shared memory file
+  file:
+    path: "{{ chroot_dir }}dgamelaunch"
+    owner: "{{ crawl_users.0.name }}"
+    group: "{{ crawl_users.0.name }}"
+    state: touch
+
+- name: Create inprogress sprint directories
+  file:
+    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item }}-sprint/"
+    owner: "{{ crawl_users.0.name }}"
+    group: "{{ crawl_users.0.name }}"
+    state: directory
+  with_items:
+    - "{{ versions | union(['git'])}}"
+
+- name: Create inprogress tut directories
+  file:
+    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item }}-tut/"
+    owner: "{{ crawl_users.0.name }}"
+    group: "{{ crawl_users.0.name }}"
+    state: directory
+  with_items:
+    - "{{ versions | union(['git'])}}"
+
+- name: Create inprogress zotdef directories
+  file:
+    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item }}-zotdef/"
+    owner: "{{ crawl_users.0.name }}"
+    group: "{{ crawl_users.0.name }}"
+    state: directory
+  with_items:
+    - "{{ versions | union(['git'])}}"
+
+- name: Create inprogress version directories
+  file:
+    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item }}/"
+    owner: "{{ crawl_users.0.name }}"
+    group: "{{ crawl_users.0.name }}"
+    state: directory
+  with_items:
+    - "{{ versions | union(['git'])}}"
+
+- name: Create rcfiles directories
+  file:
+    path: "{{ chroot_dir }}dgldir/rcfiles/crawl-{{ item }}/"
+    owner: "{{ crawl_users.0.name }}"
+    group: "{{ crawl_users.0.name }}"
+    state: directory
+  with_items:
+    - "{{ versions | union(['git'])}}"
+
+- name: Create data directories
+  file:
+    path: "{{ chroot_dir }}dgldir/data/crawl-{{ item }}-settings/"
+    owner: "{{ crawl_users.0.name }}"
+    group: "{{ crawl_users.0.name }}"
+    state: directory
+  with_items:
+    - "{{ versions | union(['git'])}}"
+
+  # TODO: /var/mail crawl user write access
+
+  # Do step 9.5
