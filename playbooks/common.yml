@@ -1,0 +1,26 @@
+---
+- name: Install common packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - build-essential
+    - debootstrap
+    - autoconf
+    - bison
+    - flex
+    - ncurses-dev
+    - libncursesw5-dev
+    - libsqlite3-dev
+    - sqlite3
+    - liblua5.1-0-dev
+    - libz-dev
+    - pkg-config
+    - libsdl2-image-dev
+    - libsdl2-mixer-dev
+    - libsdl2-dev
+    - libfreetype6-dev
+    - libpng-dev
+    - ttf-dejavu-core
+    - ccache
+    - binutils-gold

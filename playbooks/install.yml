@@ -1,14 +1,66 @@
 ---
-- name: Install common packages
-  apt:
-    name: "{{ item }}"
-    state: present
+- name: Create crawl db and gamedirs
+  command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl {{ item.command }}"
+  args:
+    creates: "{{ item.creates }}"
   with_items:
-    - build-essential
-    - debootstrap
-    - autoconf
-    - bison
-    - flex
-    - ncurses-dev
-    - libncursesw5-dev
-    - libsqlite3-dev
+    - command: create-versions-db
+      creates: "{{ chroot_dir }}crawl-versions.db3"
+    - command: create-crawl-gamedir
+      creates: "{{ chroot_dir }}crawl-master/crawl-git/saves/logfile"
+
+- name: Create versions from git
+  command: cp -a {{ chroot_dir }}crawl-master/crawl-git {{ chroot_dir }}crawl-master/crawl-{{ item }}
+  args:
+    creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/saves/logfile"
+  with_items: "{{ versions }}"
+
+- name: Push configs to chroot and /etc
+  command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl publish --confirm"
+  args:
+    creates: /etc/dgamelaunch.conf
+
+- name: Ensure locale is correctly installed
+  locale_gen: name=en_US.UTF-8 state=present
+
+- block:
+  - name: Install trunk ( go grab a coffee... )
+    command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
+    args:
+      creates: "{{ chroot_dir }}crawl-master/crawl-git/data/docs/crawl_changelog.txt"
+
+  - name: Install versions ( this will take a long while... )
+    command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-stable {{ item }}"
+    args:
+      creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/data/docs/crawl_changelog.txt"
+    with_items: "{{ versions }}"
+  become_user: crawl-dev
+  become: yes
+
+- name: Setup cronjob for trunk
+  cron:
+    name: "Update crawl trunk"
+    minute: 0
+    hour: 6
+    job: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
+    user: crawl-dev
+
+- name: Copy webserver templates to correct locations
+  command: cp {{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/*.html {{ chroot_dir }}crawl-master/webserver/templates/
+  args:
+    creates: "{{ chroot_dir }}crawl-master/webserver/templates/client.html"
+
+- name: Ensure wwwdir exists
+  file:
+    path: /var/www/crawl
+    state: directory
+
+- name: Symlink folders to wwwdir
+  file:
+    src: "{{ chroot_dir }}dgldir/{{ item }}"
+    dest: /var/www/crawl/{{ item }}
+    state: link
+  with_items:
+    - morgue
+    - rcfiles
+    - ttyrec

@@ -110,6 +110,4 @@
   with_items:
     - "{{ versions | union(['git'])}}"
 
-  # TODO: /var/mail crawl user write access
-
-  # Do step 9.5
+  # TODO: /var/mail ensure crawl user has write access

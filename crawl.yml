@@ -12,8 +12,9 @@
       - { role: cw-ansible.cw-letsencrypt, when: ssl }
 
     tasks:
-      - include: playbooks/install.yml
+      - include: playbooks/common.yml
       - include: playbooks/users.yml
       - include: playbooks/chroot.yml
       - include: playbooks/crawl-admin.yml
       - include: playbooks/configure.yml
+      - include: playbooks/install.yml
