@@ -1,5 +1,6 @@
 ---
 protocol: http://
+subdomain: crawl
 domain: crawl-webtiles.com
 letsencrypt_email: webmaster@crawl-webtiles.com
 chroot_dir: /home/crawl/DGL/
@@ -25,9 +26,9 @@ max_users: "64000"
 server_id: "CSZO - Dungeon Crawl Stone Soup - crawl.s-z.org / dobrazupa.org"
 server_name: "cszo"
 versions:
-  - "0.16"
-  - "0.17"
   - "0.18"
+  - "0.17"
+
 port: "8080"
 ssl: False
 
@@ -45,4 +46,4 @@ letsencrypt_certificates:
   - domains:
       - name: "{{ domain }}"
         cn: yes
-      - www.{{ domain }}
+      - "{{ subdomain }}.{{ domain }}"

@@ -1,2 +1,24 @@
 ---
-# TODO setup nginx
+- name: Install fcgi
+  apt: name={{ item }} state=present
+  with_items:
+    - spawn-fcgi
+    - fcgiwrap
+
+- name: Create vhost configuration
+  template:
+    src: templates/vhost.conf.j2
+    dest: /etc/nginx/sites-available/{{ domain }}
+  notify: reload nginx
+
+- name: Enable vhost configuration
+  file:
+    src: /etc/nginx/sites-available/{{ domain }}
+    dest: /etc/nginx/sites-enabled/{{ domain }}
+    state: link
+  notify: reload nginx
+
+- name: Start webtiles
+  service:
+    name: webtiles
+    state: started

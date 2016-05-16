@@ -1,0 +1,10 @@
+server {
+  listen 80;
+
+  root /var/www/crawl;
+  index index.html index.htm;
+
+  server_name {{ domain }} {{ subdomain }}.{{ domain }};
+
+  return 301 $scheme://{{ subdomain }}.{{ domain }}:{{ port }}$request_uri;
+}

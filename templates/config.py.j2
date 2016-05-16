@@ -7,11 +7,11 @@ except ImportError:
 dgl_mode = True
 
 bind_nonsecure = True # Set to false to only use SSL
-bind_address = "{{ ansible_default_ipv4.address }}"
+bind_address = "{{ inventory_hostname }}"
 bind_port = {{ port }}
 
 bind_pairs = (
-    ("{{ ansible_default_ipv4.address }}", {{ port }}),
+    ("{{ inventory_hostname }}", {{ port }}),
 )
 
 logging_config = {
@@ -154,11 +154,11 @@ ssl_options = {
 {% else %}
 ssl_options = None # No SSL
 {% endif %}
-ssl_address = "{{ ansible_default_ipv4.address }}"
+ssl_address = "{{ inventory_hostname }}"
 ssl_port = 443
 
 ssl_bind_pairs = (
-    ("{{ ansible_default_ipv4.address }}", 443),
+    ("{{ inventory_hostname }}", 443),
 )
 
 connection_timeout = 600

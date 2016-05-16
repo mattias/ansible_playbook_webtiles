@@ -24,18 +24,23 @@
   locale_gen: name=en_US.UTF-8 state=present
 
 - block:
-  - name: Install trunk ( go grab a coffee... )
-    command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
-    args:
-      creates: "{{ chroot_dir }}crawl-master/crawl-git/data/docs/crawl_changelog.txt"
-
-  - name: Install versions ( this will take a long while... )
+  - name: Installing versions ( this will take a long while... )
     command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-stable {{ item }}"
     args:
       creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/data/docs/crawl_changelog.txt"
     with_items: "{{ versions }}"
-  become_user: crawl-dev
-  become: yes
+
+  - name: Installing trunk ( go grab a coffee... )
+    command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
+    args:
+      creates: "{{ chroot_dir }}crawl-master/crawl-git/data/docs/crawl_changelog.txt"
+    become_user: crawl-dev
+    become: yes
+
+- name: Copy webserver templates to correct locations
+  shell: cp {{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/*.html {{ chroot_dir }}crawl-master/webserver/templates/
+  args:
+    creates: "{{ chroot_dir }}crawl-master/webserver/templates/client.html"
 
 - name: Setup cronjob for trunk
   cron:
@@ -44,11 +49,6 @@
     hour: 6
     job: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
     user: crawl-dev
-
-- name: Copy webserver templates to correct locations
-  command: cp {{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/*.html {{ chroot_dir }}crawl-master/webserver/templates/
-  args:
-    creates: "{{ chroot_dir }}crawl-master/webserver/templates/client.html"
 
 - name: Ensure wwwdir exists
   file:
@@ -64,3 +64,18 @@
     - morgue
     - rcfiles
     - ttyrec
+
+- block:
+  - name: Git clone tornado
+    git:
+      repo: git://github.com/flodiebold/tornado.git
+      dest: "{{ crawl_dev_dir }}tornado"
+      version: http-timeouts-2.4
+
+  - name: Build tornado
+    command: python setup.py build
+    args:
+      chdir: "{{ crawl_dev_dir }}tornado"
+      creates: "{{ crawl_dev_dir }}tornado/build/lib.linux-x86_64-2.7/tornado/__init__.py"
+  become_user: crawl-dev
+  become: yes

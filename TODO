@@ -1,1 +1,3 @@
 * Add Let's encrypt to nginx
+* Add experimental branch support (dgl update-trunk branchname)
+* Add nginx vhost configuration
