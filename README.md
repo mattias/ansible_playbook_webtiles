@@ -30,5 +30,11 @@ ansible-galaxy install -r requirements.yml
 ansible-playbook -i inventories/ crawl.yml
 ```
 
+## Configuration
+To configure the server correctly, change the values you want to modify in vars/webtiles.yml.
+
 ## Notes
 * Edit /etc/ansible/ansible.cfg and both uncomment and set roles_path to $HOME/.ansible/roles
+
+
+
