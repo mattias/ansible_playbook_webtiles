@@ -1,3 +1,5 @@
 * Add Let's encrypt to nginx
 * Add experimental branch support (dgl update-trunk branchname)
 * Add nginx vhost configuration
+* Make it remove versions no longer in the list
+* Select which webserver version to use, for example webtiles-changes (branch in crawl git)

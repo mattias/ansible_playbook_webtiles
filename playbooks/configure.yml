@@ -68,41 +68,25 @@
     - git-tut
     - git-zotdef
 
-- name: Create inprogress sprint directories
+- name: Create experimental directories
   file:
-    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item[2:] }}-sprint/"
+    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item[0] }}{{ item[1] }}/"
     owner: "{{ crawl_users.0.name }}"
     group: "{{ crawl_users.0.name }}"
     state: directory
-  with_items:
-    - "{{ versions }}"
+  with_nested:
+    - "{{ experimentals }}"
+    - [ '', '-sprint', '-tut', '-zotdef']
 
-- name: Create inprogress tut directories
+- name: Create stable inprogress directories
   file:
-    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item[2:] }}-tut/"
+    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item[0][2:] }}{{ item[1] }}/"
     owner: "{{ crawl_users.0.name }}"
     group: "{{ crawl_users.0.name }}"
     state: directory
-  with_items:
+  with_nested:
     - "{{ versions }}"
-
-- name: Create inprogress zotdef directories
-  file:
-    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item[2:] }}-zotdef/"
-    owner: "{{ crawl_users.0.name }}"
-    group: "{{ crawl_users.0.name }}"
-    state: directory
-  with_items:
-    - "{{ versions }}"
-
-- name: Create inprogress version directories
-  file:
-    path: "{{ chroot_dir }}dgldir/inprogress/crawl-{{ item[2:] }}/"
-    owner: "{{ crawl_users.0.name }}"
-    group: "{{ crawl_users.0.name }}"
-    state: directory
-  with_items:
-    - "{{ versions }}"
+    - [ '', '-sprint', '-tut', '-zotdef']
 
 - name: Create rcfiles directories
   file:
@@ -111,7 +95,7 @@
     group: "{{ crawl_users.0.name }}"
     state: directory
   with_items:
-    - "{{ versions | union(['git'])}}"
+    - "{{ versions | union(['git']) | union(experimentals) }}"
 
 - name: Create data directories
   file:
@@ -120,6 +104,6 @@
     group: "{{ crawl_users.0.name }}"
     state: directory
   with_items:
-    - "{{ versions | union(['git'])}}"
+    - "{{ versions | union(['git']) | union(experimentals) }}"
 
   # TODO: /var/mail ensure crawl user has write access

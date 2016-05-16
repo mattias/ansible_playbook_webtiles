@@ -28,7 +28,9 @@ server_name: "cszo"
 versions:
   - "0.18"
   - "0.17"
-
+experimentals:
+  - "firewalk"
+  - "allygod"
 port: "8080"
 ssl: False
 
