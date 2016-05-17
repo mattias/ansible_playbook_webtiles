@@ -85,9 +85,3 @@
   with_items:
     - crawl-master/
     - dgldir/
-
-- name: Ensure init-webtiles.sh is executable
-  file:
-    path: "{{ chroot_dir }}bin/init-webtiles.sh"
-    mode: "0755"
-    state: file
