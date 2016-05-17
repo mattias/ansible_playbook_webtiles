@@ -4,6 +4,5 @@
 * Make it remove versions no longer in the list
 * Select which webserver version to use, for example webtiles-changes (figure out where to set this) (http://sprunge.us/HONd?diff)
 * Restart webtiles and run dgl publish after adding new versions as well as restarting inotify
-* Read through dgl publish script
 * Configure main_admin.txt, main_user.txt experimental_menu.txt menus correctly
-* Look through config.py 
+* Setup SSH user with cao keys
