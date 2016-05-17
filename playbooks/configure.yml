@@ -1,7 +1,7 @@
 ---
 - block:
   - include: configure-scripts.yml
-  
+
   - name: Configure dgl-manage.conf
     lineinfile:
       dest: "{{ crawl_dev_dir }}dgamelaunch-config/dgl-manage.conf"

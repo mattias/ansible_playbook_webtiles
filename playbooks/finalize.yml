@@ -1,0 +1,37 @@
+---
+- name: Copy over dg-status.sh script
+  copy:
+    src: files/dgl-status.sh
+    dest: "/usr/lib/cgi-bin/dgl-status.sh"
+    owner: root
+    group: root
+    mode: 755
+
+- name: Install inotify watcher dependencies
+  cpanm: name=Linux::inotify2
+
+- name: Check if inotify is already running
+  debug: msg="TODO"
+
+# TODO: If running, stop it then start it
+# TODO: If not running, just start it
+- name: Start inotify watcher
+  command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl crawl-inotify-dglwhere"
+
+- name: Add ssh user
+  user:
+    name: {{ ssh_username }}
+    shell: /usr/local/sbin/dgamelaunch
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+
+- name: Add sshd_config settings
+  blockinfile:
+    dest: /etc/ssh/sshd_config
+    block: |
+      Match User terminal
+        AllowAgentForwarding no
+        AllowTcpForwarding no
+        X11Forwarding no
+        PasswordAuthentication no

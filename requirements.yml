@@ -1,4 +1,4 @@
 ---
 - src: geerlingguy.git
-- src: geerlingguy.nginx
+- src: geerlingguy.apache
 - src: cw-ansible.cw-letsencrypt

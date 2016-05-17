@@ -1,22 +1,47 @@
 ---
-- name: Install fcgi
-  apt: name={{ item }} state=present
-  with_items:
-    - spawn-fcgi
-    - fcgiwrap
+- block:
+  - name: Install fcgi
+    apt: name={{ item }} state=present
+    with_items:
+      - spawn-fcgi
+      - fcgiwrap
 
-- name: Create vhost configuration
-  template:
-    src: templates/vhost.conf.j2
-    dest: /etc/nginx/sites-available/{{ domain }}
-  notify: reload nginx
+  - name: Create vhost configuration
+    template:
+      src: templates/vhost.conf.j2
+      dest: /etc/nginx/sites-available/{{ domain }}
+    notify: reload nginx
 
-- name: Enable vhost configuration
+  - name: Enable vhost configuration
+    file:
+      src: /etc/nginx/sites-available/{{ domain }}
+      dest: /etc/nginx/sites-enabled/{{ domain }}
+      state: link
+    notify: reload nginx
+
+  when: webserver == 'nginx'
+
+- block:
+  - name: Enable rewrite for apache
+    command: a2enmod rewrite
+    notify: restart apache
+
+  when: webserver == 'apache'
+
+- name: Ensure meta folder exists in /var/www/crawl for each version
   file:
-    src: /etc/nginx/sites-available/{{ domain }}
-    dest: /etc/nginx/sites-enabled/{{ domain }}
+    path: /var/www/crawl/meta/{{ item }}
+    state: directory
+  with_items: "{{ [ 'git' ] | union(versions) | union(experimentals) }}"
+
+- name: Symlink folders to meta dirs
+  file:
+    src: "{{ chroot_dir }}crawl-master/crawl-{{ item[0] }}/saves/{{ item[1] }}"
+    dest: /var/www/crawl/meta/{{ item[0] }}/{{ item[1] }}
     state: link
-  notify: reload nginx
+  with_nested:
+    - "{{ [ 'git' ] | union(versions) | union(experimentals) }}"
+    - [ 'logfile', 'logfile-sprint', 'logfile-zotdef', 'milestones', 'milestones-sprint', 'milestones-zotdef', 'scores', 'scores-sprint', 'scores-zotdef' ]
 
 - name: Start webtiles
   service:

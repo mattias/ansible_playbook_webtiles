@@ -20,3 +20,4 @@
       - include: playbooks/crons.yml
       - include: playbooks/install.yml
       - include: playbooks/setup-www.yml
+      - include: playbooks/finalize.yml

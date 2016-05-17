@@ -7,12 +7,20 @@
     job: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
     user: crawl-dev
 
+- name: Copy shell script for ttyrec compress
+  copy:
+    src: files/ttyreccompress.sh
+    dest: "{{ crawl_dev_dir }}ttyreccompress.sh"
+    owner: crawl-dev
+    group: crawl-dev
+    mode: 750
+
 - name: Setup cronjob for compress-ttyrecs
   cron:
     name: "Compress ttyrecs"
     minute: 15
     hour: "*/4"
-    job: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl compress-ttyrecs"
+    job: "{{ crawl_dev_dir }}ttyreccompress.sh"
     user: crawl-dev
 
 - name: Copy shell script for clean trunks
