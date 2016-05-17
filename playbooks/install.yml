@@ -13,7 +13,7 @@
   command: cp -a {{ chroot_dir }}crawl-master/crawl-git {{ chroot_dir }}crawl-master/crawl-{{ item }}
   args:
     creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/saves/logfile"
-  with_items: "{{ versions }}"
+  with_items: "{{ versions | union(experimentals) }}"
 
 - name: Push configs to chroot and /etc
   command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl publish --confirm"
@@ -30,6 +30,12 @@
       creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/data/docs/crawl_changelog.txt"
     with_items: "{{ versions }}"
 
+  - name: Installing experimentals ( might as well take a walk outside... )
+    command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk {{ item }}"
+    args:
+      creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/data/docs/crawl_changelog.txt"
+    with_items: "{{ experimentals }}"
+
   - name: Installing trunk ( go grab a coffee... )
     command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
     args:
@@ -41,14 +47,6 @@
   shell: cp {{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/*.html {{ chroot_dir }}crawl-master/webserver/templates/
   args:
     creates: "{{ chroot_dir }}crawl-master/webserver/templates/client.html"
-
-- name: Setup cronjob for trunk
-  cron:
-    name: "Update crawl trunk"
-    minute: 0
-    hour: 6
-    job: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
-    user: crawl-dev
 
 - name: Ensure wwwdir exists
   file:

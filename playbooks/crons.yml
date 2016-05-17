@@ -1,0 +1,32 @@
+---
+- name: Setup cronjob for update-trunk
+  cron:
+    name: "Update crawl trunk"
+    minute: 0
+    hour: 6
+    job: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
+    user: crawl-dev
+
+- name: Setup cronjob for compress-ttyrecs
+  cron:
+    name: "Compress ttyrecs"
+    minute: 15
+    hour: "*/4"
+    job: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl compress-ttyrecs"
+    user: crawl-dev
+
+- name: Copy shell script for clean trunks
+  copy:
+    src: files/cleantrunks.sh
+    dest: "{{ crawl_dev_dir }}cleantrunks.sh"
+    owner: crawl-dev
+    group: crawl-dev
+    mode: 750
+
+- name: Setup cronjob for clean trunks
+  cron:
+    name: "Clean old trunks"
+    minute: 30
+    hour: 3
+    job: "{{ crawl_dev_dir }}cleantrunks.sh"
+    user: crawl-dev

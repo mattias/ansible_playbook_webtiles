@@ -106,4 +106,8 @@
   with_items:
     - "{{ versions | union(['git']) | union(experimentals) }}"
 
-  # TODO: /var/mail ensure crawl user has write access
+- name: Ensure crawl user has write access to /var/mail
+  file:
+    path: "{{ chroot_dir }}var/mail"
+    state: directory
+    mode: "0777"

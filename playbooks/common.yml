@@ -24,3 +24,4 @@
     - ttf-dejavu-core
     - ccache
     - binutils-gold
+    - lsof
