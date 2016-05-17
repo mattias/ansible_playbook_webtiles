@@ -119,43 +119,22 @@ games = OrderedDict([
 {% endfor %}
 {% for version in experimentals %}
     ("dcss-{{ version }}", dict(
-        name = "DCSS {{ version }}",
-        crawl_binary = "/bin/crawl-git-launcher.sh",
+        name = "{{ version }}",
+        crawl_binary = "/bin/crawl-stable-launcher.sh",
+        {% if loop.index == 1 %}
+        separator = "<br><br>Experimentals<br>",
+        {% else %}
+        separator = "<br>",
+        {% endif %}
         send_json_options = True,
         pre_options  = [ "{{ version }}" ],
-        rcfile_path = "%%CHROOT_RCFILESDIR%%/crawl-{{ version }}/",
-        macro_path = "%%CHROOT_RCFILESDIR%%/crawl-{{ version }}/",
+        rcfile_path = "%%CHROOT_RCFILESDIR%%/crawl-git/",
+        macro_path = "%%CHROOT_RCFILESDIR%%/crawl-git/",
         morgue_path = "%%CHROOT_MORGUEDIR%%/%n/",
         morgue_url = "{{ protocol }}{{ domain }}/morgue/%n/",
-        inprogress_path = "%%CHROOT_INPROGRESSDIR%%/crawl-{{ version[2:] }}/",
+        inprogress_path = "%%CHROOT_INPROGRESSDIR%%/crawl-{{ version }}/",
         ttyrec_path = "%%CHROOT_TTYRECDIR%%/%n/",
         socket_path = "%%CHROOT_WEBDIR%%/sockets")),
-    ("spr-{{ version }}", dict(
-        name = "Sprint {{ version }}",
-        crawl_binary = "/bin/crawl-git-launcher.sh",
-        send_json_options = True,
-        pre_options  = [ "{{ version }}" ],
-        rcfile_path = "%%CHROOT_RCFILESDIR%%/crawl-{{ version }}/",
-        macro_path = "%%CHROOT_RCFILESDIR%%/crawl-{{ version }}/",
-        morgue_path = "%%CHROOT_MORGUEDIR%%/%n/",
-        morgue_url = "{{ protocol }}{{ domain }}/morgue/%n/",
-        inprogress_path = "%%CHROOT_INPROGRESSDIR%%/crawl-{{ version[2:] }}-sprint/",
-        ttyrec_path = "%%CHROOT_TTYRECDIR%%/%n/",
-        socket_path = "%%CHROOT_WEBDIR%%/sockets",
-        options = ["-sprint"])),
-    ("tut-{{ version }}", dict(
-        name = "Tutorial {{ version }}",
-        crawl_binary = "/bin/crawl-git-launcher.sh",
-        send_json_options = True,
-        pre_options  = [ "{{ version }}" ],
-        rcfile_path = "%%CHROOT_RCFILESDIR%%/crawl-{{ version }}/",
-        macro_path = "%%CHROOT_RCFILESDIR%%/crawl-{{ version }}/",
-        morgue_path = "%%CHROOT_MORGUEDIR%%/%n/",
-        morgue_url = "{{ protocol }}{{ domain }}/morgue/%n/",
-        inprogress_path = "%%CHROOT_INPROGRESSDIR%%/crawl-{{ version[2:] }}-tut/",
-        ttyrec_path = "%%CHROOT_TTYRECDIR%%/%n/",
-        socket_path = "%%CHROOT_WEBDIR%%/sockets",
-        options = ["-tutorial"])),
 
 {% endfor %}
 ])
@@ -172,9 +151,6 @@ milestone_file = [
 {% endfor %}
 {% for version in experimentals %}
     "%%CHROOT_CRAWL_BASEDIR%%/crawl-{{ version }}/saves/milestones",
-    "%%CHROOT_CRAWL_BASEDIR%%/crawl-{{ version }}/saves/milestones-tutorial",
-    "%%CHROOT_CRAWL_BASEDIR%%/crawl-{{ version }}/saves/milestones-sprint",
-    "%%CHROOT_CRAWL_BASEDIR%%/crawl-{{ version }}/saves/milestones-zotdef",
 {% endfor %}
     "%%CHROOT_CRAWL_GAMEDIR%%/saves/milestones",
     "%%CHROOT_CRAWL_GAMEDIR%%/saves/milestones-tutorial",

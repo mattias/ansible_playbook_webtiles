@@ -1,5 +1,7 @@
 ---
 - block:
+  - include: configure-scripts.yml
+  
   - name: Configure dgl-manage.conf
     lineinfile:
       dest: "{{ crawl_dev_dir }}dgamelaunch-config/dgl-manage.conf"
@@ -106,6 +108,7 @@
   with_items:
     - "{{ versions | union(['git']) | union(experimentals) }}"
 
+# TODO: Add correct group to crawl instead?
 - name: Ensure crawl user has write access to /var/mail
   file:
     path: "{{ chroot_dir }}var/mail"

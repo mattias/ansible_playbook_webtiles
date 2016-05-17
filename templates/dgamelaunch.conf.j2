@@ -189,8 +189,8 @@ menu["mainmenu_user"] {
   commands["aA"] = play_game "atc"
   commands["bB"] = play_game "boggle"
   commands["rR"] = play_game "rfk"
-  commands["pP"] = play_game "dcss-0.17"
-  commands["sS"] = play_game "spr-0.17"
+  commands["pP"] = play_game "dcss-{{ versions.0 }}"
+  commands["sS"] = play_game "spr-{{ versions.0 }}"
   commands["qQ"] = quit
 }
 
@@ -210,6 +210,7 @@ menu["crawl-git"] {
   commands["pP"] = play_game "dcss-git"
   commands["tT"] = play_game "tut-git"
   commands["sS"] = play_game "spr-git"
+  commands["xX"] = submenu "experimental"
   commands["A"] = submenu "crawl-git-adv"
   commands["wW"] = watch_menu
   commands["qQ"] = return
@@ -233,24 +234,16 @@ menu["crawl-{{ version }}"] {
   commands["qQ"] = return
 }
 {% endfor %}
+
+menu["experimental"] {
+  bannerfile = "%%CHROOT_DGLDIR%%/data/menus/experimental.txt"
 {% for version in experimentals %}
-menu["crawl-{{ version }}"] {
-  bannerfile = "%%CHROOT_DGLDIR%%/data/menus/crawl-{{ version }}.txt"
-  commands["o"] = exec "ee" "%rrcfiles/crawl-{{ version }}/%n.rc"
-  commands["O"] = exec "virus" "%rrcfiles/crawl-{{ version }}/%n.rc"
-  commands["m"] = exec "ee" "%rrcfiles/crawl-{{ version }}/%n.macro"
-  commands["M"] = exec "virus" "%rrcfiles/crawl-{{ version }}/%n.macro"
-  commands["v"] = exec "ee" "%%CHROOT_CRAWL_BASEDIR%%/crawl-{{ version }}/data/docs/changelog.txt"
-  commands["V"] = exec "virus" "%%CHROOT_CRAWL_BASEDIR%%/crawl-{{ version }}/data/docs/changelog.txt"
-  commands["pP"] = play_game "dcss-{{ version }}"
-  commands["tT"] = play_game "tut-{{ version }}"
-  commands["sS"] = play_game "spr-{{ version }}"
-  commands["zZ"] = play_game "zd-{{ version }}"
-  commands["A"] = submenu "crawl-{{ version }}-adv"
-  commands["wW"] = watch_menu
+  commands["{{ loop.index }}"] = play_game "dcss-{{ version }}"
+{% endfor %}
+  commands["A"] = submenu "crawl-experimental-adv"
   commands["qQ"] = return
 }
-{% endfor %}
+
 
 menu["crawl-git-adv"] {
   bannerfile = "%%CHROOT_DGLDIR%%/data/menus/crawl_git_adv.txt"
@@ -282,21 +275,15 @@ menu["crawl-{{ version }}-adv"] {
 }
 {% endfor %}
 
+menu["crawl-experimental-adv"] {
+  bannerfile = "%%CHROOT_DGLDIR%%/data/menus/crawl-experimental_adv.txt"
 {% for version in experimentals %}
-menu["crawl-{{ version }}-adv"] {
-  bannerfile = "%%CHROOT_DGLDIR%%/data/menus/crawl-{{ version }}_adv.txt"
-  commands["B"] =
+  commands["{{ loop.index }}"] =
     exec "/bin/savegame-backup.sh" "%n crawl-{{ version }} %%CHROOT_CRAWL_BASEDIR%%",
     return
-  commands["O"] =
-    cp "%rdata/crawl-{{ version }}-settings/init.txt" "%rrcfiles/crawl-{{ version }}/%n.rc",
-    return
-  commands["M"] =
-    cp "%rdata/crawl-git.macro" "%rrcfiles/crawl-{{ version }}/%n.macro",
-    return
+{% endfor %}
   commands["qQ"] = return
 }
-{% endfor %}
 
 ##############################################################################
 ##  GIT
@@ -540,19 +527,20 @@ DEFINE {
 ##############################################################################
 ##  Other branches
 ##############################################################################
+
 {% for version in experimentals %}
 ##############################################################################
 ##  {{ version }}
 ##############################################################################
 DEFINE {
-  game_path = "/bin/crawl-git-launcher.sh"
+  game_path = "/bin/crawl-stable-launcher.sh"
   game_name = "Crawl ({{ version }})"
   short_name = "dcss-{{ version }}"
 
-  game_args = "/bin/crawl-git-launcher.sh", "{{ version }}",
+  game_args = "/bin/crawl-stable-launcher.sh", "{{ version }}",
               "-name", "%n",
-              "-rc", "%rrcfiles/crawl-{{ version }}/%n.rc",
-              "-macro", "%rrcfiles/crawl-{{ version }}/%n.macro",
+              "-rc", "%rrcfiles/crawl-git/%n.rc",
+              "-macro", "%rrcfiles/crawl-git/%n.macro",
               "-webtiles-socket", "%%CHROOT_CRAWL_BASEDIR%%/webserver/sockets/%n:dcss-{{ version }}.sock",
               "-morgue", "%rmorgue/%n/"
 
@@ -571,8 +559,8 @@ DEFINE {
   ttyrecdir = "%%CHROOT_TTYRECDIR%%/%n/"
 
   commands =
-    ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-{{ version }}/%n.macro",
-    ifnxcp "%rdata/crawl-{{ version }}-settings/init.txt" "%rrcfiles/crawl-{{ version }}/%n.rc",
+    ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-git/%n.macro",
+    ifnxcp "%rdata/crawl-git-settings/init.txt" "%rrcfiles/crawl-git/%n.rc",
     setenv "MAIL" "%%CHROOT_MAILSPOOL%%/%n",
     setenv "SIMPLEMAIL" "1",
     unlink "%%CHROOT_MAILSPOOL%%/%n",
@@ -580,83 +568,4 @@ DEFINE {
 
   encoding = "UTF-8"
 }
-
-##############################################################################
-DEFINE {
-  game_path = "/bin/crawl-git-launcher.sh"
-  game_name = "Sprint ({{ version }})"
-  short_name = "spr-{{ version }}"
-
-  game_args = "/bin/crawl-git-launcher.sh", "{{ version }}",
-              "-name", "%n",
-              "-rc", "%rrcfiles/crawl-{{ version }}/%n.rc",
-              "-macro", "%rrcfiles/crawl-{{ version }}/%n.macro",
-              "-webtiles-socket", "%%CHROOT_CRAWL_BASEDIR%%/webserver/sockets/%n:spr-{{ version }}.sock",
-              "-morgue", "%rmorgue/%n/",
-              "-sprint"
-
-  extra_info_file = "%rmorgue/%n/%n.dglwhere"
-
-  #
-  # From inside the jail, where dgamelaunch should put mail - should
-  # match up with the game's settings.
-  spooldir = "%%CHROOT_MAILSPOOL%%/"
-
-  max_idle_time = 3600
-
-  # make sure the inprogress dir actually exists. default is "inprogress/"
-  # each game you define here must have it's own.
-  inprogressdir = "%rinprogress/crawl-{{ version[2:] }}-sprint/"
-  ttyrecdir = "%%CHROOT_TTYRECDIR%%/%n/"
-
-  commands =
-    ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-{{ version }}/%n.macro",
-    ifnxcp "%rdata/crawl-{{ version }}-settings/init.txt" "%rrcfiles/crawl-{{ version }}/%n.rc",
-    setenv "MAIL" "%%CHROOT_MAILSPOOL%%/%n",
-    setenv "SIMPLEMAIL" "1",
-    unlink "%%CHROOT_MAILSPOOL%%/%n",
-    mkdir "%rmorgue/%n/"
-
-  encoding = "UTF-8"
-}
-
-##############################################################################
-DEFINE {
-  game_path = "/bin/crawl-git-launcher.sh"
-  game_name = "Tutorial ({{ version }})"
-  short_name = "tut-{{ version }}"
-
-  game_args = "/bin/crawl-git-launcher.sh", "{{ version }}",
-              "-name", "%n",
-              "-rc", "%rrcfiles/crawl-{{ version }}/%n.rc",
-              "-macro", "%rrcfiles/crawl-{{ version }}/%n.macro",
-              "-webtiles-socket", "%%CHROOT_CRAWL_BASEDIR%%/webserver/sockets/%n:tut-{{ version }}.sock",
-              "-morgue", "%rmorgue/%n/",
-              "-tutorial"
-
-  extra_info_file = "%rmorgue/%n/%n.dglwhere"
-
-  #
-  # From inside the jail, where dgamelaunch should put mail - should
-  # match up with the game's settings.
-  spooldir = "%%CHROOT_MAILSPOOL%%/"
-
-  max_idle_time = 3600
-
-  # make sure the inprogress dir actually exists. default is "inprogress/"
-  # each game you define here must have it's own.
-  inprogressdir = "%rinprogress/crawl-{{ version[2:] }}-tut/"
-  ttyrecdir = "%%CHROOT_TTYRECDIR%%/%n/"
-
-  commands =
-    ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-{{ version }}/%n.macro",
-    ifnxcp "%rdata/crawl-{{ version }}-settings/init.txt" "%rrcfiles/crawl-{{ version }}/%n.rc",
-    setenv "MAIL" "%%CHROOT_MAILSPOOL%%/%n",
-    setenv "SIMPLEMAIL" "1",
-    unlink "%%CHROOT_MAILSPOOL%%/%n",
-    mkdir "%rmorgue/%n/"
-
-  encoding = "UTF-8"
-}
-
 {% endfor %}

@@ -17,8 +17,7 @@
 
 - name: Push configs to chroot and /etc
   command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl publish --confirm"
-  args:
-    creates: /etc/dgamelaunch.conf
+  # TODO: only publish if configs has changed
 
 - name: Ensure locale is correctly installed
   locale_gen: name=en_US.UTF-8 state=present
@@ -27,19 +26,13 @@
   - name: Installing versions ( this will take a long while... )
     command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-stable {{ item }}"
     args:
-      creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/data/docs/crawl_changelog.txt"
+      creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/data/docs/changelog.txt"
     with_items: "{{ versions }}"
-
-  - name: Installing experimentals ( might as well take a walk outside... )
-    command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk {{ item }}"
-    args:
-      creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/data/docs/crawl_changelog.txt"
-    with_items: "{{ experimentals }}"
 
   - name: Installing trunk ( go grab a coffee... )
     command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
     args:
-      creates: "{{ chroot_dir }}crawl-master/crawl-git/data/docs/crawl_changelog.txt"
+      creates: "{{ chroot_dir }}crawl-master/crawl-latest/data/docs/changelog.txt"
     become_user: crawl-dev
     become: yes
 
@@ -47,6 +40,14 @@
   shell: cp {{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/*.html {{ chroot_dir }}crawl-master/webserver/templates/
   args:
     creates: "{{ chroot_dir }}crawl-master/webserver/templates/client.html"
+
+- name: Installing experimentals ( might as well take a walk outside... )
+  shell: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-stable {{ item }}"
+  args:
+    creates: "{{ chroot_dir }}crawl-master/crawl-{{ item }}/data/docs/changelog.txt"
+  with_items: "{{ experimentals }}"
+  become_user: crawl-dev
+  become: yes
 
 - name: Ensure wwwdir exists
   file:
@@ -77,3 +78,16 @@
       creates: "{{ crawl_dev_dir }}tornado/build/lib.linux-x86_64-2.7/tornado/__init__.py"
   become_user: crawl-dev
   become: yes
+
+- name: Ensure permissions are correct
+  command: chown -R crawl:crawl {{ chroot_dir }}{{ item }}
+  changed_when: false
+  with_items:
+    - crawl-master/
+    - dgldir/
+
+- name: Ensure init-webtiles.sh is executable
+  file:
+    path: "{{ chroot_dir }}bin/init-webtiles.sh"
+    mode: "0755"
+    state: file

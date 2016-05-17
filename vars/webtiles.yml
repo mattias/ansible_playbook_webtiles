@@ -1,4 +1,6 @@
 ---
+# apache or nginx
+webserver: nginx
 protocol: http://
 subdomain: crawl
 domain: crawl-webtiles.com
@@ -21,6 +23,9 @@ mounts:
   - proc
   - dev/pts
 
+region: Sweden
+server_admin: Mattias
+
 # dgamelaunch.conf variables
 max_users: "64000"
 server_id: "CSZO - Dungeon Crawl Stone Soup - crawl.s-z.org / dobrazupa.org"
@@ -29,8 +34,7 @@ versions:
   - "0.18"
   - "0.17"
 experimentals:
-  - "firewalk"
-  - "allygod"
+  - "combo_god"
 port: "8080"
 ssl: False
 
