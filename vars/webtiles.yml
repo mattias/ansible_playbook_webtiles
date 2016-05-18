@@ -98,11 +98,10 @@ server_admin: Mattias
 
 # dgamelaunch.conf variables
 max_users: "64000"
-server_id: "CSZO - Dungeon Crawl Stone Soup - crawl.s-z.org / dobrazupa.org"
-server_name: "cszo"
+server_id: "CCWC - Dungeon Crawl Stone Soup - {{ subdomain }}.{{ domain }}"
+server_name: "ccwc"
 versions:
   - "0.18"
-  - "0.17"
 experimentals:
   - "combo_god"
 port: "8080"

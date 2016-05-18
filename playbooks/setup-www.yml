@@ -21,13 +21,6 @@
 
   when: webserver == 'nginx'
 
-- block:
-  - name: Enable rewrite for apache
-    command: a2enmod rewrite
-    notify: restart apache
-
-  when: webserver == 'apache'
-
 - name: Ensure meta folder exists in /var/www/crawl for each version
   file:
     path: /var/www/crawl/meta/{{ item }}
@@ -42,8 +35,3 @@
   with_nested:
     - "{{ [ 'git' ] | union(versions) | union(experimentals) }}"
     - [ 'logfile', 'logfile-sprint', 'logfile-zotdef', 'milestones', 'milestones-sprint', 'milestones-zotdef', 'scores', 'scores-sprint', 'scores-zotdef' ]
-
-- name: Start webtiles
-  service:
-    name: webtiles
-    state: started

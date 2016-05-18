@@ -30,6 +30,8 @@
     template:
       src: templates/config.py.j2
       dest: "{{ crawl_dev_dir }}dgamelaunch-config/config.py"
+    register: webtiles_config
+    notify: restart webtiles
 
   become_user: crawl-dev
   become: yes
@@ -108,7 +110,6 @@
   with_items:
     - "{{ versions | union(['git']) | union(experimentals) }}"
 
-# TODO: Add correct group to crawl instead?
 - name: Ensure crawl user has write access to /var/mail
   file:
     path: "{{ chroot_dir }}var/mail"

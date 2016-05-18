@@ -1,8 +1,6 @@
-* Add Let's encrypt to nginx
+* Add Let's encrypt to nginx or use self-signed?
 * Add experimental branch support https://github.com/neilmoore/dgamelaunch-config/commit/f01b68647023ffa7db5bbcd296e17e01fe250021 (DONE - kept for reference)
 * Add nginx vhost configuration
 * Make it remove versions no longer in the list
 * Select which webserver version to use, for example webtiles-changes (figure out where to set this) (http://sprunge.us/HONd?diff)
-* Restart webtiles and run dgl publish after adding new versions as well as restarting inotify
-* Configure main_admin.txt, main_user.txt experimental_menu.txt menus correctly
-* Setup SSH user with cao keys
+* Fix apache vhost

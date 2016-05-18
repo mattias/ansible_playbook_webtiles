@@ -10,28 +10,33 @@
 - name: Install inotify watcher dependencies
   cpanm: name=Linux::Inotify2
 
-- name: Check if lock file exists
-  stat: path={{ chroot_dir }}dgldir/.crawl-inotify.lock
-  register: inotify_lock
+- debug: var=webtiles_config
 
-- name: Get inotify pid
-  shell: "ps aux | grep crawl-inotify-dglwhere.pl | awk '{print $2}'"
-  register: inotify_pid
+- block:
+  - name: Check if lock file exists
+    stat: path={{ chroot_dir }}dgldir/.crawl-inotify.lock
+    register: inotify_lock
 
-- name: Set inotify pid count
-  set_fact:
-    inotify_pid_count: "{{ inotify_pid.stdout_lines | length }}"
+  - name: Get inotify pid
+    shell: "ps aux | grep crawl-inotify-dglwhere.pl | awk '{print $2}'"
+    register: inotify_pid
 
-- name: Stop inotify watcher
-  shell: kill -9 {{ inotify_pid.stdout_lines[0] }}
-  when: inotify_pid_count != "2"
+  - name: Set inotify pid count
+    set_fact:
+      inotify_pid_count: "{{ inotify_pid.stdout_lines | length }}"
 
-- name: Remove inotify watcher lock-file
-  file: path={{ chroot_dir }}dgldir/.crawl-inotify.lock state=absent
-  when: inotify_lock.stat.exists
+  - name: Stop inotify watcher
+    shell: kill -9 {{ inotify_pid.stdout_lines[0] }}
+    when: inotify_pid_count != "2"
 
-- name: Start inotify watcher
-  command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl crawl-inotify-dglwhere"
+  - name: Remove inotify watcher lock-file
+    file: path={{ chroot_dir }}dgldir/.crawl-inotify.lock state=absent
+    when: inotify_lock.stat.exists
+
+  - name: Start inotify watcher
+    command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl crawl-inotify-dglwhere"
+
+  when: webtiles_config.changed
 
 - name: Add ssh user
   user:

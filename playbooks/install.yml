@@ -35,10 +35,22 @@
   become_user: crawl-dev
   become: yes
 
+- name: Add webtiles-banner
+  copy:
+    src: files/webtiles-banner.html
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    mode: "0644"
+  with_items:
+    - dest: "{{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/banner.html"
+      owner: crawl-dev
+    - dest: "{{ chroot_dir }}crawl-master/webserver/templates/banner.html" # Just in case
+      owner: crawl
+
 - name: Copy webserver templates to correct locations
   shell: cp {{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/*.html {{ chroot_dir }}crawl-master/webserver/templates/
   args:
-    creates: "{{ chroot_dir }}crawl-master/webserver/templates/client.html"
+    creates: "{{ chroot_dir }}crawl-master/webserver/templates/banner.html"
 
 - name: Installing experimentals ( might as well take a walk outside... )
   shell: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-stable {{ item }}"

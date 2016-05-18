@@ -6,6 +6,12 @@
     vars_files:
       - vars/webtiles.yml
 
+    handlers:
+      - name: restart webtiles
+        service:
+          name: webtiles
+          state: restarted
+
     roles:
       - geerlingguy.git
       - geerlingguy.apache
