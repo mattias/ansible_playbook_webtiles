@@ -10,8 +10,6 @@
 - name: Install inotify watcher dependencies
   cpanm: name=Linux::Inotify2
 
-- debug: var=webtiles_config
-
 - block:
   - name: Check if lock file exists
     stat: path={{ chroot_dir }}dgldir/.crawl-inotify.lock
@@ -55,3 +53,15 @@
         AllowTcpForwarding no
         X11Forwarding no
         PasswordAuthentication no
+
+- name: Fetch ssh key
+  fetch:
+    dest: crawl_keys
+    src: /home/{{ ssh_username }}/.ssh/id_rsa
+
+- name: Make sure webtiles starts on boot
+  service:
+    name: webtiles
+    enabled: yes
+    state: started
+  register: webtiles_service

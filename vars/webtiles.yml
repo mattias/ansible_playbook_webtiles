@@ -98,8 +98,8 @@ server_admin: Mattias
 
 # dgamelaunch.conf variables
 max_users: "64000"
-server_id: "CCWC - Dungeon Crawl Stone Soup - {{ subdomain }}.{{ domain }}"
-server_name: "ccwc"
+server_id: "CCW - Dungeon Crawl Stone Soup - {{ subdomain }}.{{ domain }}"
+server_name: "ccw"
 versions:
   - "0.18"
 experimentals:

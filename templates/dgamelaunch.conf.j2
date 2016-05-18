@@ -115,8 +115,6 @@ watch_columns = [ ["", "", 0, "%s)"],
 #
 
 commands[register] = mkdir "%%CHROOT_TTYRECDIR%%/%n",
-    ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-git/%n.macro",
-    ifnxcp "%rdata/crawl-git-settings/init.txt" "%rrcfiles/crawl-git/%n.rc",
 {% for version in versions %}
     ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-{{ version }}/%n.macro",
     ifnxcp "%rdata/crawl-{{ version }}-settings/init.txt" "%rrcfiles/crawl-{{ version }}/%n.rc",
@@ -125,10 +123,10 @@ commands[register] = mkdir "%%CHROOT_TTYRECDIR%%/%n",
     ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-{{ version }}/%n.macro",
     ifnxcp "%rdata/crawl-{{ version }}-settings/init.txt" "%rrcfiles/crawl-{{ version }}/%n.rc",
 {% endfor %}
+    ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-git/%n.macro",
+    ifnxcp "%rdata/crawl-git-settings/init.txt" "%rrcfiles/crawl-git/%n.rc"
 
 commands[login] = mkdir "%%CHROOT_TTYRECDIR%%/%n",
-    ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-git/%n.macro",
-    ifnxcp "%rdata/crawl-git-settings/init.txt" "%rrcfiles/crawl-git/%n.rc",
 {% for version in versions %}
     ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-{{ version }}/%n.macro",
     ifnxcp "%rdata/crawl-{{ version }}-settings/init.txt" "%rrcfiles/crawl-{{ version }}/%n.rc",
@@ -137,6 +135,8 @@ commands[login] = mkdir "%%CHROOT_TTYRECDIR%%/%n",
     ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-{{ version }}/%n.macro",
     ifnxcp "%rdata/crawl-{{ version }}-settings/init.txt" "%rrcfiles/crawl-{{ version }}/%n.rc",
 {% endfor %}
+    ifnxcp "%rdata/crawl-git.macro" "%rrcfiles/crawl-git/%n.macro",
+    ifnxcp "%rdata/crawl-git-settings/init.txt" "%rrcfiles/crawl-git/%n.rc"
 
 # commands[gamestart] =
 #     mkdir "%%CHROOT_TTYRECDIR%%/%n",

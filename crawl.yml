@@ -11,6 +11,7 @@
         service:
           name: webtiles
           state: restarted
+        when: webtiles_service.changed == false
 
     roles:
       - geerlingguy.git
