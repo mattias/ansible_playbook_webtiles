@@ -57,8 +57,8 @@ apache_vhosts:
   #     BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
   - servername: "{{ subdomain }}.{{ domain }}"
-    documentroot: "/var/www/crawl"
     extra_parameters: |
+      DocumentRoot "/var/www"
       RewriteEngine on
 
       ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
@@ -83,6 +83,7 @@ apache_vhosts:
       RewriteCond %{REQUEST_URI} ^/ttyrec/([^/]*)/(.*\.ttyrec)
       RewriteCond /var/www/%{REQUEST_FILENAME} !-f
       RewriteRule ^/ttyrec/([^/]*)/(.*\.ttyrec)$ /ttyrec/$1/$2.bz2
+
       RewriteRule ^/crawl - [L]
       RewriteRule ^/crawl/morgue - [L]
       RewriteRule ^/crawl/rcfiles - [L]
