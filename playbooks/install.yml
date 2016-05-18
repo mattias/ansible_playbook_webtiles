@@ -50,7 +50,7 @@
 - name: Copy webserver templates to correct locations
   shell: cp {{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/*.html {{ chroot_dir }}crawl-master/webserver/templates/
   args:
-    creates: "{{ chroot_dir }}crawl-master/webserver/templates/banner.html"
+    creates: "{{ chroot_dir }}crawl-master/webserver/templates/footer.html"
 
 - name: Installing experimentals ( might as well take a walk outside... )
   shell: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-stable {{ item }}"
