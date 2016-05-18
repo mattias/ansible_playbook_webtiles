@@ -17,7 +17,6 @@
 
 - name: Push configs to chroot and /etc
   command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl publish --confirm"
-  # TODO: only publish if configs has changed
 
 - name: Ensure locale is correctly installed
   locale_gen: name=en_US.UTF-8 state=present
@@ -33,8 +32,8 @@
     command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl update-trunk"
     args:
       creates: "{{ chroot_dir }}crawl-master/crawl-latest/data/docs/changelog.txt"
-    become_user: crawl-dev
-    become: yes
+  become_user: crawl-dev
+  become: yes
 
 - name: Copy webserver templates to correct locations
   shell: cp {{ crawl_dev_dir }}dgamelaunch-config/crawl-build/crawl-git-repository/crawl-ref/source/webserver/templates/*.html {{ chroot_dir }}crawl-master/webserver/templates/
