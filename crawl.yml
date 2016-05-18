@@ -8,7 +8,8 @@
 
     roles:
       - geerlingguy.git
-      - geerlingguy.nginx
+      - geerlingguy.apache
+      - ANXS.perl
       - { role: cw-ansible.cw-letsencrypt, when: ssl }
 
     tasks:

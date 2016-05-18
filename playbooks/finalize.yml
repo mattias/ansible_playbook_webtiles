@@ -8,19 +8,34 @@
     mode: 755
 
 - name: Install inotify watcher dependencies
-  cpanm: name=Linux::inotify2
+  cpanm: name=Linux::Inotify2
 
-- name: Check if inotify is already running
-  debug: msg="TODO"
+- name: Check if lock file exists
+  stat: path={{ chroot_dir }}dgldir/.crawl-inotify.lock
+  register: inotify_lock
 
-# TODO: If running, stop it then start it
-# TODO: If not running, just start it
+- name: Get inotify pid
+  shell: "ps aux | grep crawl-inotify-dglwhere.pl | awk '{print $2}'"
+  register: inotify_pid
+
+- name: Set inotify pid count
+  set_fact:
+    inotify_pid_count: "{{ inotify_pid.stdout_lines | length }}"
+
+- name: Stop inotify watcher
+  shell: kill -9 {{ inotify_pid.stdout_lines[0] }}
+  when: inotify_pid_count != "2"
+
+- name: Remove inotify watcher lock-file
+  file: path={{ chroot_dir }}dgldir/.crawl-inotify.lock state=absent
+  when: inotify_lock.stat.exists
+
 - name: Start inotify watcher
   command: "{{ crawl_dev_dir }}dgamelaunch-config/bin/dgl crawl-inotify-dglwhere"
 
 - name: Add ssh user
   user:
-    name: {{ ssh_username }}
+    name: "{{ ssh_username }}"
     shell: /usr/local/sbin/dgamelaunch
     generate_ssh_key: yes
     ssh_key_bits: 2048

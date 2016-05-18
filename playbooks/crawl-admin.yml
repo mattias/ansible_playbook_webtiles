@@ -29,7 +29,7 @@
         dest: "{{ crawl_dev_dir }}dgamelaunch-config"
       - repo: git://github.com/neilmoore/sizzell.git
         dest: "{{ crawl_dev_dir }}sizzell"
-    when: git_stat.stat.exists == False
+    when: git_stat.stat.exists == false
 
   - name: Build dgamelaunch
     shell: "sh autogen.sh --enable-debugfile --enable-sqlite --enable-shmem"

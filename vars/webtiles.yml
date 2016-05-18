@@ -31,32 +31,32 @@ apache_vhosts:
     extra_parameters: |
       Redirect / {{ protocol }}{{ subdomain }}.{{ domain }}:8080
 
-  - servername: "{{ domain }}"
-    serveralias: "{{ subdomain }}.{{ domain }} www.{{ domain }}"
-    documentroot: "/var/www/crawl"
-    extra_parameters: |
-      ServerAdmin {{ admin_email }}
+  # - servername: "{{ domain }}"
+  #   serveralias: "{{ subdomain }}.{{ domain }} www.{{ domain }}"
+  #   documentroot: "/var/www/crawl"
+  #   extra_parameters: |
+  #     ServerAdmin {{ admin_email }}
+  #
+  #     SSLEngine on
+  #
+  #     SSLCertificateFile	/var/www/crawl_ssl/.crt
+  #     SSLCertificateKeyFile /var/www/crawl_ssl/server.key
+  #     SSLCertificateChainFile /var/www/crawl_ssl/.ca-bundle
+  #
+  #     <FilesMatch "\.(cgi|shtml|phtml|php)$">
+  #     		SSLOptions +StdEnvVars
+  #     </FilesMatch>
+  #     <Directory /usr/lib/cgi-bin>
+  #     		SSLOptions +StdEnvVars
+  #     </Directory>
+  #
+  #     BrowserMatch "MSIE [2-6]" \
+  #     		nokeepalive ssl-unclean-shutdown \
+  #     		downgrade-1.0 force-response-1.0
+  #     # MSIE 7 and newer should be able to use keepalive
+  #     BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
-      SSLEngine on
-
-      SSLCertificateFile	/var/www/crawl_ssl/.crt
-      SSLCertificateKeyFile /var/www/crawl_ssl/server.key
-      SSLCertificateChainFile /var/www/crawl_ssl/.ca-bundle
-
-      <FilesMatch "\.(cgi|shtml|phtml|php)$">
-      		SSLOptions +StdEnvVars
-      </FilesMatch>
-      <Directory /usr/lib/cgi-bin>
-      		SSLOptions +StdEnvVars
-      </Directory>
-
-      BrowserMatch "MSIE [2-6]" \
-      		nokeepalive ssl-unclean-shutdown \
-      		downgrade-1.0 force-response-1.0
-      # MSIE 7 and newer should be able to use keepalive
-      BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-
-  - servername: "{{ subdomain }}.{ domain }}"
+  - servername: "{{ subdomain }}.{{ domain }}"
     documentroot: "/var/www/crawl"
     extra_parameters: |
       RewriteEngine on

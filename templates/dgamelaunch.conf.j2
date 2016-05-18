@@ -163,14 +163,6 @@ menu["mainmenu_admin"] {
 {% for version in versions %}
   commands["{{ loop.index }}"] = submenu "crawl-{{ version }}"
 {% endfor %}
-{% for version in experimentals %}
-  commands["e{{ loop.index }}"] = submenu "crawl-{{ version }}"
-{% endfor %}
-  commands["aA"] = play_game "atc"
-  commands["bB"] = play_game "boggle"
-  commands["rR"] = play_game "rfk"
-  commands["pP"] = play_game "dcss-0.17"
-  commands["sS"] = play_game "spr-0.17"
   commands["qQ"] = quit
 }
 
@@ -183,14 +175,6 @@ menu["mainmenu_user"] {
 {% for version in versions %}
   commands["{{ loop.index }}"] = submenu "crawl-{{ version }}"
 {% endfor %}
-{% for version in experimentals %}
-  commands["e{{ loop.index }}"] = submenu "crawl-{{ version }}"
-{% endfor %}
-  commands["aA"] = play_game "atc"
-  commands["bB"] = play_game "boggle"
-  commands["rR"] = play_game "rfk"
-  commands["pP"] = play_game "dcss-{{ versions.0 }}"
-  commands["sS"] = play_game "spr-{{ versions.0 }}"
   commands["qQ"] = quit
 }
 
@@ -243,7 +227,6 @@ menu["experimental"] {
   commands["A"] = submenu "crawl-experimental-adv"
   commands["qQ"] = return
 }
-
 
 menu["crawl-git-adv"] {
   bannerfile = "%%CHROOT_DGLDIR%%/data/menus/crawl_git_adv.txt"
