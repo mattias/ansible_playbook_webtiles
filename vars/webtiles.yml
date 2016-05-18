@@ -58,7 +58,7 @@ apache_vhosts:
 
   - servername: "{{ subdomain }}.{{ domain }}"
     extra_parameters: |
-      DocumentRoot "/var/www"
+      DocumentRoot "/var/www/crawl"
       RewriteEngine on
 
       ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
@@ -72,26 +72,24 @@ apache_vhosts:
       # the save file name to auth-save-downloader.
       RewriteCond %{HTTP:Authorization} ^(.+)
       RewriteRule ^/saves/(.*)$ /cgi-bin/auth-save-downloader.pl?file=$1 [PT,E=HTTP_AUTHORIZATION:%1]
-      RewriteRule ^/saves/(.*)$ /cgi-bin/auth-save-downloader.pl?file=$1 [PT]
+
+      # Turn off compression for /rebuild so we can see compile messages in real time.
+      SetEnvIfNoCase Request_URI ^/rebuild(/.*)?$ no-gzip dont-vary
 
       # Make an alias /rebuild/ that passes HTTP authentication information to
       # the rebuild trigger.
       RewriteCond %{HTTP:Authorization} ^(.+)
       RewriteRule ^/rebuild(/(.*))?$ /cgi-bin/trigger-rebuild.pl?v=$2 [PT,E=HTTP_AUTHORIZATION:%1]
-      RewriteRule ^/rebuild(/(.*))?$ /cgi-bin/trigger-rebuild.pl?v=$2 [PT]
 
       RewriteCond %{REQUEST_URI} ^/ttyrec/([^/]*)/(.*\.ttyrec)
-      RewriteCond /var/www/%{REQUEST_FILENAME} !-f
+      RewriteCond /var/www/crawl/%{REQUEST_FILENAME} !-f
       RewriteRule ^/ttyrec/([^/]*)/(.*\.ttyrec)$ /ttyrec/$1/$2.bz2
 
-      RewriteRule ^/crawl - [L]
-      RewriteRule ^/crawl/morgue - [L]
-      RewriteRule ^/crawl/rcfiles - [L]
-      RewriteRule ^/crawl/ttyrec - [L]
-      RewriteRule ^/crawl/meta - [L]
+      RewriteRule ^/morgue - [L]
+      RewriteRule ^/rcfiles - [L]
+      RewriteRule ^/ttyrec - [L]
+      RewriteRule ^/meta - [L]
 
-      # Turn off compression for /rebuild so we can see compile messages in real time.
-      SetEnvIfNoCase Request_URI ^/rebuild(/.*)?$ no-gzip dont-vary
       RewriteRule ^/(.*) {{ protocol }}{{ subdomain }}.{{ domain }}:8080/$1
 
 region: Sweden
@@ -107,6 +105,19 @@ experimentals:
   - "combo_god"
 port: "8080"
 ssl: False
+
+# Sizzell
+# Register the nickname so it can identify to freenode!
+use_irc_bot: no
+irc_nickname: 'CrawlReporter'
+irc_password: 'mypassword'
+irc_name: 'CrawlReporter The Crawl Bot'
+irc_server: 'irc.freenode.net'
+irc_port: 8001
+irc_channels: "'##crawl-mattias', '##crawl-mattias-dev'"
+irc_announce_chan: '##crawl-mattias'
+irc_dev_chan: '##crawl-mattias-dev'
+irc_prefix: ')'
 
 # letsencrypt TODO
 letsencrypt_defaults:

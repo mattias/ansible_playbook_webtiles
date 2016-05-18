@@ -1,0 +1,37 @@
+---
+- name: Install dependencies for perl
+  cpanm: name=Bot::BasicBot
+
+- block:
+  - name: Configure sizzell
+    template:
+      src: templates/sizzell.pl.j2
+      dest: "{{ crawl_dev_dir }}sizzell/sizzell.pl"
+      mode: "0755"
+
+  - name: Ensure .badusers exists for sizzell
+    file:
+      state: touch
+      path: "{{ crawl_dev_dir }}sizzell/.badusers"
+
+  - name: Ensure password is set in .password
+    copy:
+      content: "{{ irc_password }}"
+      dest: "{{ crawl_dev_dir }}sizzell/.password"
+      mode: "0640"
+
+  - name: Start sizzell
+    command: "{{ crawl_dev_dir }}sizzell/sizzell.pl"
+    args:
+      creates: "{{ crawl_dev_dir }}run/sizzell.pid"
+
+  become_user: crawl-dev
+  become: yes
+
+- name: Run sizzel as cronjob and @reboot
+  cron:
+    name: Run sizzel.pl
+    special_time: reboot
+    job: "{{ crawl_dev_dir }}sizzell/sizzell.pl"
+    state: present
+    user: crawl-dev

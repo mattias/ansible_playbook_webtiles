@@ -28,4 +28,6 @@
       - include: playbooks/crons.yml
       - include: playbooks/install.yml
       - include: playbooks/setup-www.yml
+      - include: playbooks/sizzell.yml
+        when: use_irc_bot
       - include: playbooks/finalize.yml

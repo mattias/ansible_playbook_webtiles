@@ -11,9 +11,9 @@
       - regexp: '^export DGL_UID.*$'
         line: 'export DGL_UID={{ crawl_users[0].uid }}'
       - regexp: '^export DGL_SERVER.*$'
-        line: 'export DGL_SERVER={{ domain }}'
+        line: 'export DGL_SERVER={{ subdomain }}.{{ domain }}'
       - regexp: '^export WEB_SAVEDUMP_URL=.*$'
-        line: 'export WEB_SAVEDUMP_URL="{{ protocol }}{{ domain }}/morgue/"'
+        line: 'export WEB_SAVEDUMP_URL="{{ protocol }}{{ subdomain }}.{{ domain }}/morgue/"'
 
   - name: Configure crawl-git.conf
     lineinfile:

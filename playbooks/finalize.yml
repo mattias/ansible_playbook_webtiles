@@ -40,9 +40,20 @@
   user:
     name: "{{ ssh_username }}"
     shell: /usr/local/sbin/dgamelaunch
-    generate_ssh_key: yes
-    ssh_key_bits: 2048
-    ssh_key_file: .ssh/id_rsa
+
+- name: Upload ssh keys and create authorized_keys
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0400"
+    owner: "{{ ssh_username }}"
+  with_items:
+    - src: files/cao_key
+      dest: /home/{{ ssh_username }}/.ssh/id_rsa
+    - src: files/cao_key.pub
+      dest: /home/{{ ssh_username }}/.ssh/id_rsa.pub
+    - src: files/cao_key.pub
+      dest: /home/{{ ssh_username }}/.ssh/authorized_key
 
 - name: Add sshd_config settings
   blockinfile:
@@ -53,11 +64,6 @@
         AllowTcpForwarding no
         X11Forwarding no
         PasswordAuthentication no
-
-- name: Fetch ssh key
-  fetch:
-    dest: crawl_keys
-    src: /home/{{ ssh_username }}/.ssh/id_rsa
 
 - name: Make sure webtiles starts on boot
   service:

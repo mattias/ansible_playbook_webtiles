@@ -3,6 +3,5 @@
 * Add nginx vhost configuration
 * Make it remove versions no longer in the list
 * Select which webserver version to use, for example webtiles-changes (figure out where to set this) (http://sprunge.us/HONd?diff)
-* Fix apache vhost
 * ssh -C -i crawl_key -l terminal crawl.crawl-webtiles.com
 * IRC bot
