@@ -7,11 +7,19 @@ except ImportError:
 dgl_mode = True
 
 bind_nonsecure = True # Set to false to only use SSL
+{% if listen_ip is defined %}
+bind_address = "{{ listen_ip }}"
+{% else %}
 bind_address = "{{ inventory_hostname }}"
+{% endif %}
 bind_port = {{ port }}
 
 bind_pairs = (
+{% if listen_ip is defined %}
+    ("{{ listen_ip }}", {{ port }}),
+{% else %}
     ("{{ inventory_hostname }}", {{ port }}),
+{% endif %}
 )
 
 logging_config = {
@@ -176,11 +184,19 @@ ssl_options = {
 {% else %}
 ssl_options = None # No SSL
 {% endif %}
+{% if listen_ip is defined %}
+ssl_address = "{{ listen_ip }}"
+{% else %}
 ssl_address = "{{ inventory_hostname }}"
+{% endif %}
 ssl_port = 443
 
 ssl_bind_pairs = (
+{% if listen_ip is defined %}
+    ("{{ listen_ip }}", 443),
+{% else %}
     ("{{ inventory_hostname }}", 443),
+{% endif %}
 )
 
 connection_timeout = 600
