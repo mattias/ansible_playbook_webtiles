@@ -39,30 +39,24 @@ my @badusers;
 my @stonefiles     = ({% for version in versions %}
                      '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/milestones',
                      '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/milestones-sprint',
-                     '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/milestones-zotdef',
                       {% endfor %}
                       {% for version in experimentals %}
                      '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/milestones',
                      '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/milestones-sprint',
-                     '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/milestones-zotdef',
                       {% endfor %}
                       '/home/crawl/DGL/crawl-master/crawl-git/saves/milestones',
-                      '/home/crawl/DGL/crawl-master/crawl-git/saves/milestones-sprint',
-                      '/home/crawl/DGL/crawl-master/crawl-git/saves/milestones-zotdef');
+                      '/home/crawl/DGL/crawl-master/crawl-git/saves/milestones-sprint');
 
 my @logfiles       = ({% for version in versions %}
                      '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/logfile',
                      '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/logfile-sprint',
-                     '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/logfile-zotdef',
                       {% endfor %}
                       {% for version in experimentals %}
                      '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/logfile',
                      '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/logfile-sprint',
-                     '/home/crawl/DGL/crawl-master/crawl-{{ version }}/saves/logfile-zotdef',
                       {% endfor %}
                       '/home/crawl/DGL/crawl-master/crawl-git/saves/logfile',
-                      '/home/crawl/DGL/crawl-master/crawl-git/saves/logfile-sprint',
-                      '/home/crawl/DGL/crawl-master/crawl-git/saves/logfile-zotdef');
+                      '/home/crawl/DGL/crawl-master/crawl-git/saves/logfile-sprint');
 
 my @announcefiles  = ('/home/crawl-dev/logs/announcements.log');
 my $pidfile        = '/home/crawl-dev/run/sizzell.pid';
@@ -80,8 +74,7 @@ my $SERVER_BASE_URL = '{{ protocol }}{{ subdomain }}.{{ domain }}';
 my $MORGUE_BASE_URL = "$SERVER_BASE_URL/morgue";
 my $WEBTILES_BASE_URL = '{{ protocol }}{{ subdomain }}.{{ domain }}:{{ port }}/#watch-';
 
-my %GAME_TYPE_NAMES = (zot => 'ZotDef',
-                       spr => 'Sprint');
+my %GAME_TYPE_NAMES = (spr => 'Sprint');
 
 my $PREFIX = '{{ irc_prefix }}';
 my %COMMANDS = (

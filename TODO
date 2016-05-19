@@ -1,7 +1,7 @@
-* Add Let's encrypt to nginx or use self-signed?
-* Add experimental branch support https://github.com/neilmoore/dgamelaunch-config/commit/f01b68647023ffa7db5bbcd296e17e01fe250021 (DONE - kept for reference)
+* Add ssl stuff
 * Add nginx vhost configuration
-* Make it remove versions no longer in the list
+* Make it remove versions no longer in the list (not just from configuration files)
 * Select which webserver version to use, for example webtiles-changes (figure out where to set this) (http://sprunge.us/HONd?diff)
-* ssh -C -i crawl_key -l terminal crawl.crawl-webtiles.com
-* IRC bot
+* Step 14, security fixes
+
+* Add experimental branch support https://github.com/neilmoore/dgamelaunch-config/commit/f01b68647023ffa7db5bbcd296e17e01fe250021 (DONE - kept for reference)

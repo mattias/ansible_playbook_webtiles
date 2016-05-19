@@ -70,7 +70,6 @@
     - git
     - git-sprint
     - git-tut
-    - git-zotdef
 
 - name: Create experimental directories
   file:
@@ -80,7 +79,7 @@
     state: directory
   with_nested:
     - "{{ experimentals }}"
-    - [ '', '-sprint', '-tut', '-zotdef']
+    - [ '', '-sprint', '-tut' ]
 
 - name: Create stable inprogress directories
   file:
@@ -90,7 +89,7 @@
     state: directory
   with_nested:
     - "{{ versions }}"
-    - [ '', '-sprint', '-tut', '-zotdef']
+    - [ '', '-sprint', '-tut' ]
 
 - name: Create rcfiles directories
   file:

@@ -34,4 +34,4 @@
     state: link
   with_nested:
     - "{{ [ 'git' ] | union(versions) | union(experimentals) }}"
-    - [ 'logfile', 'logfile-sprint', 'logfile-zotdef', 'milestones', 'milestones-sprint', 'milestones-zotdef', 'scores', 'scores-sprint', 'scores-zotdef' ]
+    - [ 'logfile', 'logfile-sprint', 'milestones', 'milestones-sprint', 'scores', 'scores-sprint' ]

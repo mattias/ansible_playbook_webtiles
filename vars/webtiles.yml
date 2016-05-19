@@ -101,8 +101,7 @@ server_id: "CCW - Dungeon Crawl Stone Soup - {{ subdomain }}.{{ domain }}"
 server_name: "ccw"
 versions:
   - "0.18"
-experimentals:
-  - "combo_god"
+experimentals: []
 port: "8080"
 ssl: False
 
