@@ -46,18 +46,22 @@
     state: directory
     path: /home/{{ ssh_username }}/.ssh/
     mode: "0775"
+    owner: "{{ ssh_username }}"
+    group: "{{ ssh_username }}"
 
 - name: Upload ssh keys and create authorized_keys
   copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: "0400"
+    mode: "{{ item.mode | default(0600) }}"
     owner: "{{ ssh_username }}"
+    group: "{{ ssh_username }}"
   with_items:
     - src: files/cao_key
       dest: /home/{{ ssh_username }}/.ssh/id_rsa
     - src: files/cao_key.pub
       dest: /home/{{ ssh_username }}/.ssh/id_rsa.pub
+      mode: "0664"
     - src: files/cao_key.pub
       dest: /home/{{ ssh_username }}/.ssh/authorized_key
 
@@ -65,11 +69,12 @@
   blockinfile:
     dest: /etc/ssh/sshd_config
     block: |
-      Match User terminal
+      Match User {{ ssh_username }}
         AllowAgentForwarding no
         AllowTcpForwarding no
         X11Forwarding no
         PasswordAuthentication no
+  notify: restart ssh
 
 - name: Make sure webtiles starts on boot
   service:

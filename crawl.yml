@@ -12,6 +12,10 @@
           name: webtiles
           state: restarted
         when: webtiles_service.changed == false
+      - name: restart ssh
+        service:
+          name: sshd
+          state: restarted
 
     roles:
       - geerlingguy.git
