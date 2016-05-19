@@ -24,8 +24,13 @@ mounts:
   - proc
   - dev/pts
 
-apache_remove_default_vhost: false
+apache_remove_default_vhost: true
 apache_listen_port_ssl: 8081
+# Only used on Debian/Ubuntu.
+apache_mods_enabled:
+  - rewrite.load
+  - ssl.load
+  - cgi.load
 apache_vhosts:
   - servername: "www.{{ domain }}"
     extra_parameters: |
@@ -65,8 +70,7 @@ apache_vhosts:
       <Directory "/usr/lib/cgi-bin">
           AllowOverride None
           Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-          Order allow,deny
-          Allow from all
+          Require all granted
       </Directory>
       # Make an alias /saves/ that passes HTTP authentication information and
       # the save file name to auth-save-downloader.
@@ -84,6 +88,8 @@ apache_vhosts:
       RewriteCond %{REQUEST_URI} ^/ttyrec/([^/]*)/(.*\.ttyrec)
       RewriteCond /var/www/crawl/%{REQUEST_FILENAME} !-f
       RewriteRule ^/ttyrec/([^/]*)/(.*\.ttyrec)$ /ttyrec/$1/$2.bz2
+
+      RewriteRule ^/dgl-status /cgi-bin/dgl-status.sh [PT]
 
       RewriteRule ^/morgue - [L]
       RewriteRule ^/rcfiles - [L]
