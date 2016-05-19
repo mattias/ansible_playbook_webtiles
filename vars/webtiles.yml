@@ -91,6 +91,8 @@ apache_vhosts:
 
       RewriteRule ^/dgl-status /cgi-bin/dgl-status.sh [PT]
 
+      RewriteRule ^/icons - [L]
+
       RewriteRule ^/morgue - [L]
       RewriteRule ^/rcfiles - [L]
       RewriteRule ^/ttyrec - [L]
