@@ -41,6 +41,12 @@
     name: "{{ ssh_username }}"
     shell: /usr/local/sbin/dgamelaunch
 
+- name: Ensure ~/.ssh exists for user
+  file:
+    state: directory
+    path: /home/{{ ssh_username }}/.ssh/
+    mode: "0775"
+
 - name: Upload ssh keys and create authorized_keys
   copy:
     src: "{{ item.src }}"
